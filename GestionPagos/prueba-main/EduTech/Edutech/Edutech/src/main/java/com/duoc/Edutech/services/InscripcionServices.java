@@ -28,20 +28,25 @@ public class InscripcionServices {
         return inscripcionExistente;
     }
     public String buscarporrut(String rut) {
-        String alumnourl = "http://localhost:8082/api/v1/estudiantes/EstudianteDTO/"+rut;
-        String alumnodata = restTemplate.getForObject(alumnourl, String.class);
-        Inscripcion inscripcion = inscripcionRepository.findByRut(rut);
-        if (inscripcion == null) {
-            return "No se encontro inscripcion para el alumno con RUN: " + rut;
-        }else{
-            StringBuilder resultado = new StringBuilder();
-            resultado.append("Inscripcion: \n");
-            resultado.append("\n -ID.").append(inscripcion.getIdInscripcion())
-                    .append("\n -Estado.").append(inscripcion.getEstadoInscripcion())
-                    .append("\n -Fecha.").append(inscripcion.getFechaInscripcion());
-            resultado.append("Estudiante: \n");
-            resultado.append(alumnodata);
-            return resultado.toString();
+        try {
+            String alumnourl = "http://localhost:8082/api/v1/estudiantes/EstudianteDTO/" + rut;
+            String alumnodata = restTemplate.getForObject(alumnourl, String.class);
+            Inscripcion inscripcion = inscripcionRepository.findByRut(rut);
+
+            if (inscripcion == null) {
+                return "No se encontró inscripción para el alumno con RUN: " + rut;
+            } else {
+                StringBuilder resultado = new StringBuilder();
+                resultado.append("Inscripcion: \n");
+                resultado.append("\n -ID.").append(inscripcion.getIdInscripcion())
+                        .append("\n -Estado.").append(inscripcion.getEstadoInscripcion())
+                        .append("\n -Fecha.").append(inscripcion.getFechaInscripcion());
+                resultado.append("\nEstudiante: \n");
+                resultado.append(alumnodata);
+                return resultado.toString();
+            }
+        } catch (Exception e) {
+            return "Error al obtener la información del estudiante: " + rut;
         }
     }
 
